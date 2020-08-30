@@ -16,9 +16,12 @@ public class DijkstryAlgorithm {
 	public static List<Node> count(Graph g) {
 		createStartupVariables(g);
 		
+		AlgorithmViewer.viewCostsAndParents(parents, costs, processed);
 		Node node = findLowerCostNode();
+		
 		while (node != null) {
 			checkNeighborsCosts(node);
+			AlgorithmViewer.viewCostsAndParents(parents, costs, processed);
 			node = findLowerCostNode();
 		}
 		
@@ -36,6 +39,7 @@ public class DijkstryAlgorithm {
 		List<Node> neighbors = graph.getNeighbors(node);
 		for (Node neighbor : neighbors) {
 			Double newCost = cost + node.getCost(neighbor);
+			AlgorithmViewer.checkNeigbor(node, neighbor, cost, newCost);
 			updateCostAndParent(node, neighbor, newCost);
 		}
 		processed.add(node);
@@ -43,8 +47,10 @@ public class DijkstryAlgorithm {
 
 	private static void updateCostAndParent(Node node, Node neighbor, Double newCost) {
 		if (costs.getCost(neighbor) > newCost) {
+			AlgorithmViewer.updateCostAndParent(node, neighbor, newCost, costs.getCost(neighbor));
 			costs.updateCost(neighbor, newCost);
 			parents.updateParent(neighbor, node);
+			
 		}
 	}
 
@@ -59,7 +65,9 @@ public class DijkstryAlgorithm {
 	
 	private static List<Node> createWay(Node startNode, Node node, List<Node> way) {
 		way.add(node);
+		AlgorithmViewer.createWay(node, startNode);
 		while (true) {
+			AlgorithmViewer.createWayInWhile(node, parents.getParent(node));
 			node = parents.getParent(node);
 			way.add(node);
 			if (node == startNode) break;
@@ -78,6 +86,7 @@ public class DijkstryAlgorithm {
 				lovestCostNode = node;
 			}
 		}
+		AlgorithmViewer.viewLowerCostNode(lovestCostNode, lovestCost);
 		return lovestCostNode;
 	}
 
